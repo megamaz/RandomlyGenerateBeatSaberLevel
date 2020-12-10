@@ -83,6 +83,20 @@ with open(path, 'r') as loadLevel:
 with open(path, 'w')  as generate:
     notes = []
     for i in range(int(settings["notePerBeat"]), int(settings["length"]*settings["notePerBeat"])): # starts later to prevent hot start to prevent hot start
+        poss = [ # This is a lazy fix. but fuck it.
+            (0, 0),
+            (0, 1),
+            (0, 2),
+            (1, 0),
+            (1, 1),
+            (1, 2),
+            (2, 0),
+            (2, 1),
+            (2, 2),
+            (3, 0),
+            (3, 1),
+            (3, 2)
+        ]
         for _ in range(settings["notesOnBeat"]):
             if settings["includeBombs"]:
                 noteType = random.randint(0,3)
@@ -90,11 +104,10 @@ with open(path, 'w')  as generate:
                     noteType = random.randint(0,3) # making this a while loop gives 0, 1, and 3 the same chance of happening. 2 never happens.
             else:
                 noteType = random.randint(0,1)
-            pos = (random.randint(0, 3), random.randint(0, 2))
+            pos = random.choice(poss)
             if settings["checkDouble"]:
-                for double in notes:
-                    while double["_lineIndex"] == pos[0] and double["_lineLayer"] == pos[1] and double["_time"] == i*(1/settings["notePerBeat"]):
-                        pos = (random.randint(0, 3), random.randint(0, 2))
+                poss.remove(pos)
+                print(poss)                 
             note = {
                 "_time":i*(1/settings["notePerBeat"]),
                 "_lineIndex":pos[0],
